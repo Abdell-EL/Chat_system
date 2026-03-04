@@ -1,0 +1,38 @@
+.join-grid {
+    -fx-background-color: #0f172a;
+}
+.chat-grid {
+    -fx-background-color: #0b1220;
+}
+
+.title {
+    -fx-font-size: 26px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.label, .status, .online-label {
+    -fx-text-fill: white;
+}
+
+.text-field, .text-area {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.chat-area {
+    -fx-control-inner-background: #0f172a;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-background-radius: 10;
+    -fx-padding: 8 14;
+}
+
+.dot-online {
+    -fx-fill: #22c55e;
+}
+.dot-offline {
+    -fx-fill: #ef4444;
+}
