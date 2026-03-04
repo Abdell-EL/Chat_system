@@ -1,226 +1,209 @@
+# 💬 TCP Chat System
 
-####################################################
-                    TCP Chat System
-####################################################
---------------------------------------
-Overview
---------------------------------------
+A real-time multi-client chat application built with Java TCP Sockets and JavaFX.
 
-This project implements a multi-client TCP chat system using Java sockets and JavaFX.
-It allows multiple clients to connect to a server, exchange messages in real time, and see the list of connected users.
+---
 
-The system is organized as a multi-module Maven project with two applications:
+## 🌐 Overview
 
-TCPServer - the chat server with a graphical interface to monitor activity.
+**TCP Chat System** is a multi-client chat application built on Java sockets and JavaFX. It allows multiple users to connect to a central server, exchange messages in real time, and view the list of currently connected users.
 
-TCPClient - the chat client with a graphical interface for users to send and receive messages.
+The project is organized as a **multi-module Maven project** with two separate applications:
 
-Communication between server and clients is done through TCP sockets, and the UI is built with JavaFX.
+| Module | Description |
+|--------|-------------|
+| `TCPServer` | Chat server with a graphical interface for monitoring activity |
+| `TCPClient` | Chat client with a graphical interface for sending and receiving messages |
 
---------------------------------------
-Project Structure
---------------------------------------
+---
 
-Chat_system
+## ✨ Features
+
+### 🖥️ Server
+- Accepts multiple client connections simultaneously
+- Each client is handled in a dedicated thread
+- Displays connected users and a live server activity log
+- Broadcasts messages to all connected clients
+- Supports graceful shutdown
+
+### 💻 Client
+- Connects to the server via TCP
+- Send and receive messages in real time
+- Persistent chat history display
+- Live connection status indicator
+- System notifications for user join/leave events
+
+---
+
+## 📁 Project Structure
+
+```
+Chat_system/
 │
-├── TCPServer
-│   ├── src/main/java/server/app
-│   │       ServerApp.java
-│   │       ServerController.java
-│   │       TCPServer.java
+├── TCPServer/
+│   ├── src/main/java/server/app/
+│   │   ├── ServerApp.java
+│   │   ├── ServerController.java
+│   │   └── TCPServer.java
 │   │
-│   ├── src/main/java/server/model
-│   │       ChatServer.java
-│   │       ClientHandler.java
-│   │       ServerListener.java
-│   │       AppConfig.java
+│   ├── src/main/java/server/model/
+│   │   ├── ChatServer.java
+│   │   ├── ClientHandler.java
+│   │   ├── ServerListener.java
+│   │   └── AppConfig.java
 │   │
-│   └── src/main/resources
-│           config.properties
-│           style.css
+│   └── src/main/resources/
+│       ├── config.properties
+│       └── style.css
 │
-├── TCPClient
-│   ├── src/main/java/client/app
-│   │       ClientApp.java
-│   │       ChatController.java
-│   │       TCPClient.java
+├── TCPClient/
+│   ├── src/main/java/client/app/
+│   │   ├── ClientApp.java
+│   │   ├── ChatController.java
+│   │   └── TCPClient.java
 │   │
-│   ├── src/main/java/client/model
-│   │       ChatClient.java
-│   │       ClientListener.java
-│   │       AppConfig.java
+│   ├── src/main/java/client/model/
+│   │   ├── ChatClient.java
+│   │   ├── ClientListener.java
+│   │   └── AppConfig.java
 │   │
-│   └── src/main/resources
-│           config.properties
-│           style.css
-│
+│   └── src/main/resources/
+│       ├── config.properties
+│       └── style.css
+├──README.md
 └── pom.xml
+```
 
---------------------------------------
-Features
---------------------------------------
+---
 
-Server
+## ⚙️ How It Works
 
-. Accepts multiple clients simultaneously
+```
+  Client A ──┐
+             │    TCP Sockets
+  Client B ──┼──────────────────► Server ──► Broadcast to all clients
+             │
+  Client C ──┘
+```
 
-. Each client handled in a separate thread
+1. The **server** starts and listens for incoming TCP connections.
+2. When a **client connects**, a `ClientHandler` thread is created and the user registers with a username.
+3. Messages sent by a client are received by the server and **broadcast to all connected clients**.
+4. The server tracks connected users and updates the UI in real time.
 
-. Displays:
+---
 
-    . connected users
+## 📦 Requirements
 
-    . server activity log
+- **Java** 21+
+- **Maven** (or IntelliJ IDEA with Maven integration)
+- **JavaFX** (bundled via Maven dependencies)
 
-. Broadcasts messages to all connected clients
+---
 
-. Supports graceful shutdown
+## 🚀 Getting Started
 
-Client
+### Method 1 — IntelliJ IDEA *(Recommended)*
 
-. Connects to the server using TCP
+#### 1️⃣ Start the Server
 
-. Allows sending and receiving messages
+1. Open the project in **IntelliJ IDEA**
+2. Open the **Maven** panel (right sidebar)
+3. Navigate to: `TCPServer → Plugins → javafx → javafx:run`
+4. Double-click **`javafx:run`**
+5. The *TCP Chat Server* window will appear — click **Start Server**
 
-. Displays chat history
+> Default port: **3000**
 
-. Shows connection status
+#### 2️⃣ Start Clients
 
-. Shows system messages (user join/leave)
+In the Maven panel, navigate to:
 
-Configuration
+```
+TCPClient → Plugins → javafx → javafx:run
+```
 
-The server address and port are loaded from config files.
+Run it **multiple times** to simulate multiple users. Each client can connect and start chatting independently.
 
-Example:
+---
 
+### Method 2 — Command Line
+
+#### Start the Server
+
+```bash
+# Default configuration (from config.properties)
+mvn -pl TCPServer javafx:run
+
+# Custom port
+mvn -pl TCPServer javafx:run -Djavafx.args="4000"
+```
+
+#### Start a Client
+
+```bash
+# Default configuration (from config.properties)
+mvn -pl TCPClient javafx:run
+
+# Custom server address and port
+mvn -pl TCPClient javafx:run -Djavafx.args="127.0.0.1 4000"
+```
+
+---
+
+## 🔧 Configuration
+
+Connection settings are loaded from `config.properties` in each module's resources folder. Command-line arguments override these values at runtime.
+
+**`TCPServer/src/main/resources/config.properties`**
+```properties
+server.port=3000
+```
+
+**`TCPClient/src/main/resources/config.properties`**
+```properties
 server.ip=127.0.0.1
 server.port=3000
+```
 
-Command-line arguments can override these values.
+### Argument Override Reference
 
---------------------------------------
-Requirements
---------------------------------------
+| Application | Arguments | Example |
+|-------------|-----------|---------|
+| `TCPServer` | `<port>` | `4000` |
+| `TCPClient` | `<ip> <port>` | `127.0.0.1 4000` |
 
-. Java 21
+---
 
-. Maven (or IntelliJ Maven integration)
+## 🧩 Main Classes
 
-. JavaFX
+### Server
 
---------------------------------------
-How to Run
---------------------------------------
+| Class | Responsibility |
+|-------|---------------|
+| `ChatServer` | Manages the server socket and accepts client connections |
+| `ClientHandler` | Handles communication with a single connected client (runs in its own thread) |
+| `ServerController` | JavaFX UI controller for the server window |
+| `ServerListener` | Interface for pushing updates from the model to the UI |
+| `AppConfig` | Loads and provides server configuration |
 
-Method 1 — Using IntelliJ (Recommended)
+### Client
 
---------------------------------------
+| Class | Responsibility |
+|-------|---------------|
+| `ChatClient` | Manages TCP communication with the server |
+| `ChatController` | JavaFX UI controller for the chat window |
+| `ClientListener` | Interface for pushing updates from the model to the UI |
+| `AppConfig` | Loads and provides client configuration |
 
-1️⃣ Start the Server
+---
 
-1.Open the project in IntelliJ IDEA
+## 🛠️ Technologies
 
-2.Open the Maven panel on the right
-
-3.Navigate to:
-
-    TCPServer → Plugins → javafx → javafx:run
-
-4.Double-click javafx:run
-
-5.The TCP Chat Server window will appear
-
-6.Click Start Server
-
-    Default port: 3000
-
---------------------------------------
-
-2️⃣ Start Clients
-
-In the Maven panel:
-
-    TCPClient → Plugins → javafx → javafx:run
-
-Run it multiple times to simulate multiple users.
-
-Each client can connect and start chatting.
-
---------------------------------------
-Running with Command Line Arguments
---------------------------------------
-
-The system supports overriding the configuration file.
-
-- Server
-
-Example:
-
-    TCPServer 4000
-
-This starts the server on port 4000.
-
-- Client
-
-Example:
-
-    TCPClient 127.0.0.1 4000
-
-This connects the client to:
-
-    IP: 127.0.0.1
-    Port: 4000
-
-If arguments are not provided, the values from config.properties are used.
-
---------------------------------------
-How the System Works
---------------------------------------
-
-1.The server starts and listens for incoming TCP connections.
-
-2.When a client connects:
-
-    . A ClientHandler thread is created.
-
-    . The user registers with a username.
-
-3.Messages sent by a client are:
-
-    . received by the server
-
-    . broadcast to all connected clients.
-
-4.The server keeps track of connected users and updates the UI.
-
---------------------------------------
-Main Classes
---------------------------------------
-
-- Server
-
-ChatServer - manages server socket and client connections
-ClientHandler - handles communication with a single client
-ServerController - JavaFX UI controller
-ServerListener - interface for UI updates
-
-- Client
-
-ChatClient - handles TCP communication
-ChatController - JavaFX UI controller
-ClientListener - interface for UI updates
-
---------------------------------------
-Technologies Used
---------------------------------------
-
-. Java
-
-. JavaFX
-
-. TCP Sockets
-
-. Maven
-
-. Multi-threading
+| Technology | Usage |
+|------------|-------|
+| **Java 21** | Core language |
+| **JavaFX** | GUI framework for both server and client |
+| **TCP Sockets** | Network communication layer |
+| **Maven** | Multi-module build and dependency management |
+| **Multi-threading** | Concurrent client handling on the server |
